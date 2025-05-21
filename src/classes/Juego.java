@@ -77,23 +77,25 @@ public class Juego implements Serializable {
 		return enemigos.isEmpty();
 	}
 
-	public void jugar(Scanner sc) {
-		System.out.println("Bienvenido al juego: ");
+	public void jugar(Scanner sc, boolean cargado) {
+		if (cargado== false) {
+			System.out.println("Bienvenido al juego: ");
 
-		int rondas = Metodos.cogerRondas(sc);
-		String nombre = Metodos.cogerNombre(sc);
-		int clase = Metodos.cogerClase(sc);
+			int rondas = Metodos.cogerRondas(sc);
+			String nombre = Metodos.cogerNombre(sc);
+			int clase = Metodos.cogerClase(sc);
 
-		if (clase == 1)
-			this.nuevoMago(nombre);
-		else if (clase == 2)
-			this.nuevoGuerrero(nombre);
-		else
-			System.out.println("Esta clase no existe");
+			if (clase == 1)
+				this.nuevoMago(nombre);
+			else if (clase == 2)
+				this.nuevoGuerrero(nombre);
+			else
+				System.out.println("Esta clase no existe");
 
-		this.setnRondas(rondas);
-		this.iniciarJuego();
+			this.setnRondas(rondas);
+			this.iniciarJuego();
 
+		}
 		while (this.getRonda() <= this.getnRondas() && !jugador.muerto()) {
 			this.procesarRonda(sc);
 		}

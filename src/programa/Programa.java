@@ -24,6 +24,7 @@ public class Programa {
 		char continuar = 0;
 
 		do {
+			boolean cargado = false;
 			Juego juego = null;
 			System.out.print("Quieres cargar partida?[s/n]: ");
 			char opcion = sc.nextLine().toLowerCase().charAt(0);
@@ -34,6 +35,7 @@ public class Programa {
 					escriba = new FileInputStream(guardado);
 					imprenta = new ObjectInputStream(escriba);
 					juego = (Juego) imprenta.readObject();
+					cargado = true;
 				} catch (ClassNotFoundException | IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -47,7 +49,7 @@ public class Programa {
 				}
 			}
 
-			juego.jugar(sc);
+			juego.jugar(sc, cargado);
 			System.out.print("¿Volver a jugar?(s/n) ");
 			continuar = sc.nextLine().toLowerCase().charAt(0);
 		} while (continuar == 's');
