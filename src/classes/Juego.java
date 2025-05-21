@@ -77,8 +77,8 @@ public class Juego implements Serializable {
 		return enemigos.isEmpty();
 	}
 
-	public void jugar(Scanner sc, boolean cargado) {
-		if (cargado== false) {
+	public boolean jugar(Scanner sc, boolean cargado) {
+		if (cargado == false) {
 			System.out.println("Bienvenido al juego: ");
 
 			int rondas = Metodos.cogerRondas(sc);
@@ -97,17 +97,23 @@ public class Juego implements Serializable {
 
 		}
 		while (this.getRonda() <= this.getnRondas() && !jugador.muerto()) {
-			this.procesarRonda(sc);
+			if (this.procesarRonda(sc) == false) {
+				break;
+			}
 		}
 
 		if (!jugador.muerto() && this.finalJuego()) {
 			System.out.println("Has ganado");
+		} else if (!jugador.muerto() && !this.finalJuego()) {
+			System.out.println("Nos vemos");
+			return false;
 		} else {
-			System.out.println("Has perdido");
+			System.out.println("Perdiste");
 		}
+		return true;
 	}
 
-	public void procesarRonda(Scanner sc) {
+	public boolean procesarRonda(Scanner sc) {
 		Enemigo enemigo = this.getSiguiente();
 		FileOutputStream escriba = null;
 		ObjectOutputStream editor = null;
@@ -156,15 +162,22 @@ public class Juego implements Serializable {
 				}
 			}
 
-		} else
+		} else if (accion == 4) {
+
+			System.out.println("Salimos del juego");
+			return false;
+
+		} else {
 			System.out.println("Esta accion no existe");
 
-		if (this.terminarRonda()) {
-			System.out.println("Enemigo vencido");
-		} else if (jugador.muerto()) {
-			System.out.println("Has muerto");
+			if (this.terminarRonda()) {
+				System.out.println("Enemigo vencido");
+			} else if (jugador.muerto()) {
+				System.out.println("Has muerto");
 
+			}
 		}
+		return true;
 	}
 
 	public Personaje getJugador() {
@@ -189,6 +202,10 @@ public class Juego implements Serializable {
 
 	public void setRonda(int ronda) {
 		this.ronda = ronda;
+	}
+
+	private boolean guardado() {
+		return true;
 	}
 
 }

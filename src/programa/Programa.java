@@ -49,9 +49,12 @@ public class Programa {
 				}
 			}
 
-			juego.jugar(sc, cargado);
-			System.out.print("¿Volver a jugar?(s/n) ");
-			continuar = sc.nextLine().toLowerCase().charAt(0);
+			if (juego.jugar(sc, cargado) == true) {
+				System.out.print("¿Volver a jugar?(s/n) ");
+				continuar = sc.nextLine().toLowerCase().charAt(0);
+			} else {
+				break;
+			}
 		} while (continuar == 's');
 	}
 
