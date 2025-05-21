@@ -1,6 +1,6 @@
 package classes;
 
-public class Mago extends Personaje {
+public class Mago extends Personaje implements Jugable {
 	private static final int ATAQUE_MAGIA = 20;
 	private static final int ATAQUE_SIN_MAGIA = 5;
 	private static final int DEFENSA = 5;

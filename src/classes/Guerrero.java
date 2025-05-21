@@ -1,6 +1,6 @@
 package classes;
 
-public class Guerrero extends Personaje {
+public class Guerrero extends Personaje implements Jugable {
 	private static final int ATAQUE = 15;
 	private static final int DEFENSA = 10;
 	private static final int POCIONES = 15;

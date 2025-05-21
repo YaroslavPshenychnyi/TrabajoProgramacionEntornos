@@ -26,7 +26,7 @@ public class Metodos {
 	}
 
 	public static int cogerAccion(Scanner sc) {
-		System.out.println("Acciones:\n" + "1. Atacar\n" + "2. Curar");
+		System.out.println("Acciones:\n" + "1. Atacar\n" + "2. Curar\n" + "3. Guardar partida\n");
 		System.out.print("Elige: ");
 		int accion = sc.nextInt();
 		sc.nextLine();

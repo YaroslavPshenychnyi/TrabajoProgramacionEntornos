@@ -1,6 +1,10 @@
 package classes;
 
-public class Personaje {
+import java.io.Serializable;
+
+public abstract class Personaje implements Serializable {
+
+	private static final long serialVersionUID = 796622658086604549L;
 	private String nombre;
 	private int vida;
 	private int vidaInicial;
@@ -27,9 +31,6 @@ public class Personaje {
 			else
 				otro.setVida(0);
 		}
-	}
-
-	public void curar() {
 	}
 
 	public void resetear() {

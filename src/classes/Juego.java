@@ -1,12 +1,20 @@
 package classes;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
 
 import utils.Metodos;
 
-public class Juego {
+public class Juego implements Serializable {
+
+	private static final long serialVersionUID = -8020844114105634678L;
+
 	private static final String[] nombresEnemigos = { "Sergio Malon", "Don Malvado", "La Sombra", "Diego Viver",
 			"El Escorpión", "Doña Cruel", "El Fantasma", "Señor Veneno", "La Viuda Negra", "El Diablo Rojo",
 			"Capitán Trampa", "Marquesa Oscura", "El Verdugo", "Reina Letal", "Hijo del Miedo", "El Lobo Negro",
@@ -99,7 +107,8 @@ public class Juego {
 
 	public void procesarRonda(Scanner sc) {
 		Enemigo enemigo = this.getSiguiente();
-
+		FileOutputStream escriba = null;
+		ObjectOutputStream editor = null;
 		System.out.printf("Ronda %d/%d%n", this.getRonda(), this.getnRondas());
 		System.out.printf("Eres %s%n", jugador.toString());
 		System.out.printf("Estás luchando contra: %s%n", enemigo.toString());
@@ -114,8 +123,37 @@ public class Juego {
 		} else if (accion == 2) {
 			System.out.printf("%s se cura%n", jugador.getNombre());
 			System.out.printf("%s ataca a %s%n", enemigo.getNombre(), jugador.getNombre());
-			jugador.curar();
+			if (jugador instanceof Jugable) {
+				((Jugable) jugador).curar();
+			}
 			enemigo.atacar(jugador);
+		} else if (accion == 3) {
+			System.out.println("Guardamos partida");
+			File guardado = new File("save.txt");
+			if (!guardado.exists()) {
+				try {
+					guardado.createNewFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			try {
+				escriba = new FileOutputStream(guardado);
+				editor = new ObjectOutputStream(escriba);
+				editor.writeObject(this);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					editor.close();
+					escriba.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
 		} else
 			System.out.println("Esta accion no existe");
 
