@@ -169,13 +169,13 @@ public class Juego implements Serializable {
 
 		} else {
 			System.out.println("Esta accion no existe");
+		}
+		
+		if (this.terminarRonda()) {
+			System.out.println("Enemigo vencido");
+		} else if (jugador.muerto()) {
+			System.out.println("Has muerto");
 
-			if (this.terminarRonda()) {
-				System.out.println("Enemigo vencido");
-			} else if (jugador.muerto()) {
-				System.out.println("Has muerto");
-
-			}
 		}
 		return true;
 	}
