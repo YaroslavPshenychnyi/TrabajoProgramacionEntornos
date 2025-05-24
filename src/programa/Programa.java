@@ -1,59 +1,30 @@
 package programa;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Scanner;
 import classes.Juego;
+import utils.Metodos;
+import utils.MetodosGuardado;
 
 public class Programa {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		Juego juego = new Juego();
 		File guardado = new File("save.txt");
-		if (!guardado.exists()) {
+		MetodosGuardado.archivoSiempreExiste(guardado);
+		char continuar = 0;
+		do {
+			juego = MetodosGuardado.juegoCargado(juego, sc, guardado);
 			try {
-				guardado.createNewFile();
+				if (juego.jugar(sc, juego.isCargado()) == true) {
+					continuar = Metodos.seguirJugando(sc);
+				} else {
+					break;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-		}
-		FileInputStream escriba = null;
-		ObjectInputStream imprenta = null;
-		char continuar = 0;
-
-		do {
-			boolean cargado = false;
-			Juego juego = null;
-			System.out.print("Quieres cargar partida?[s/n]: ");
-			char opcion = sc.nextLine().toLowerCase().charAt(0);
-			if (opcion == 'n') {
-				juego = new Juego();
-			} else if (opcion == 's') {
-				try {
-					escriba = new FileInputStream(guardado);
-					imprenta = new ObjectInputStream(escriba);
-					juego = (Juego) imprenta.readObject();
-					cargado = true;
-				} catch (ClassNotFoundException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					try {
-						imprenta.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-
-			if (juego.jugar(sc, cargado) == true) {
-				System.out.print("¿Volver a jugar?(s/n) ");
-				continuar = sc.nextLine().toLowerCase().charAt(0);
-			} else {
-				break;
 			}
 		} while (continuar == 's');
 	}

@@ -1,15 +1,22 @@
 package classes;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
 
 import utils.Metodos;
+import utils.MetodosGuardado;
 
 public class Juego implements Serializable {
 
@@ -19,14 +26,17 @@ public class Juego implements Serializable {
 			"El Escorpión", "Doña Cruel", "El Fantasma", "Señor Veneno", "La Viuda Negra", "El Diablo Rojo",
 			"Capitán Trampa", "Marquesa Oscura", "El Verdugo", "Reina Letal", "Hijo del Miedo", "El Lobo Negro",
 			"Brujo Sangriento" };
-
+	private static String nombreRecord;
+	private static int rondaRecord;
 	private ArrayList<Enemigo> enemigos;
 	Personaje jugador;
 	int nRondas;
 	int ronda;
+	boolean cargado;
 
 	public Juego() {
 		enemigos = new ArrayList<Enemigo>();
+
 	}
 
 	private static String nombreAleatorio() {
@@ -77,10 +87,10 @@ public class Juego implements Serializable {
 		return enemigos.isEmpty();
 	}
 
-	public boolean jugar(Scanner sc, boolean cargado) {
+	public boolean jugar(Scanner sc, boolean cargado) throws IOException {
+		File guardad = new File("save.txt");
 		if (cargado == false) {
 			System.out.println("Bienvenido al juego: ");
-
 			int rondas = Metodos.cogerRondas(sc);
 			String nombre = Metodos.cogerNombre(sc);
 			int clase = Metodos.cogerClase(sc);
@@ -96,27 +106,37 @@ public class Juego implements Serializable {
 			this.iniciarJuego();
 
 		}
+		if (this.algoQueLeer()) {
+			System.out.println("\nRecord actual de rondas: " + rondaRecord);
+			System.out.println("Personaje que lo tiene : " + nombreRecord + "\n");
+		}
 		while (this.getRonda() <= this.getnRondas() && !jugador.muerto()) {
 			if (this.procesarRonda(sc) == false) {
 				break;
 			}
 		}
-
 		if (!jugador.muerto() && this.finalJuego()) {
 			System.out.println("Has ganado");
+			guardad.delete();
+			if (this.ronda > rondaRecord) {
+				System.out.println("Nuevo récord");
+				rondaRecord = this.ronda - 1;
+				nombreRecord = this.jugador.getNombre();
+				this.guardarRecord();
+			}
 		} else if (!jugador.muerto() && !this.finalJuego()) {
 			System.out.println("Nos vemos");
 			return false;
 		} else {
 			System.out.println("Perdiste");
+			guardad.delete();
+
 		}
 		return true;
 	}
 
-	public boolean procesarRonda(Scanner sc) {
+	public boolean procesarRonda(Scanner sc) throws IOException {
 		Enemigo enemigo = this.getSiguiente();
-		FileOutputStream escriba = null;
-		ObjectOutputStream editor = null;
 		System.out.printf("Ronda %d/%d%n", this.getRonda(), this.getnRondas());
 		System.out.printf("Eres %s%n", jugador.toString());
 		System.out.printf("Estás luchando contra: %s%n", enemigo.toString());
@@ -136,46 +156,29 @@ public class Juego implements Serializable {
 			}
 			enemigo.atacar(jugador);
 		} else if (accion == 3) {
-			System.out.println("Guardamos partida");
-			File guardado = new File("save.txt");
-			if (!guardado.exists()) {
-				try {
-					guardado.createNewFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			try {
-				escriba = new FileOutputStream(guardado);
-				editor = new ObjectOutputStream(escriba);
-				editor.writeObject(this);
 
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					editor.close();
-					escriba.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-		} else if (accion == 4) {
-
-			System.out.println("Salimos del juego");
+			MetodosGuardado.guardarPartida(this);
+			System.out.println("Guardamos y salimos del juego");
 			return false;
 
 		} else {
-			System.out.println("Esta accion no existe");
-
-			if (this.terminarRonda()) {
-				System.out.println("Enemigo vencido");
-			} else if (jugador.muerto()) {
-				System.out.println("Has muerto");
-
+			System.out.println("Acción no encotrada");
+		}
+		if (this.terminarRonda()) {
+			System.out.println("Enemigo vencido");
+		} else if (jugador.muerto()) {
+			System.out.println("Has muerto");
+			if (this.ronda - 1 > rondaRecord) {
+				System.out.println("Nuevo record");
+				rondaRecord = this.ronda - 1;
+				nombreRecord = this.jugador.getNombre();
+				try {
+					this.guardarRecord();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+
 		}
 		return true;
 	}
@@ -204,8 +207,43 @@ public class Juego implements Serializable {
 		this.ronda = ronda;
 	}
 
-	private boolean guardado() {
-		return true;
+	public boolean algoQueLeer() throws IOException {
+
+		FileReader record = new FileReader("record.txt");
+		BufferedReader lector = new BufferedReader(record);
+		ArrayList<String> datos = new ArrayList<String>();
+		while (lector.ready()) {
+			datos.add(lector.readLine());
+		}
+		if (datos.isEmpty()) {
+			lector.close();
+			return false;
+		} else {
+			rondaRecord = Integer.parseInt(datos.get(0));
+			nombreRecord = datos.get(1);
+			lector.close();
+			return true;
+		}
+
+	}
+
+	public void guardarRecord() throws IOException {
+		FileWriter escriba = new FileWriter("record.txt");
+		BufferedWriter imprenta = new BufferedWriter(escriba);
+
+		imprenta.append(rondaRecord + "\n");
+		imprenta.append(nombreRecord);
+
+		imprenta.close();
+		escriba.close();
+	}
+
+	public boolean isCargado() {
+		return cargado;
+	}
+
+	public void setCargado(boolean cargado) {
+		this.cargado = cargado;
 	}
 
 }
