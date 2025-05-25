@@ -18,7 +18,9 @@ public class Metodos {
 
 			try {
 				rondas = sc.nextInt();
-				valido = true;
+				if (rondas > 0) {
+					valido = true;
+				}
 			} catch (InputMismatchException e) {
 				System.out.println("Por favor, introduce un numero válido");
 			} finally {
@@ -31,7 +33,7 @@ public class Metodos {
 
 	public static String cogerNombre(Scanner sc) {
 		String nombre = "";
-		while (nombre.isEmpty()) {
+		while (nombre.trim().isEmpty()) {
 			System.out.print("Introduce tu nombre: ");
 			nombre = sc.nextLine();
 		}
@@ -68,7 +70,6 @@ public class Metodos {
 		}
 		return accion;
 	}
-
 
 	public static char seguirJugando(Scanner sc) {
 		char continuar;

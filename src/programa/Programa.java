@@ -16,7 +16,7 @@ public class Programa {
 		MetodosGuardado.archivoSiempreExiste(guardado);
 		char continuar = 0;
 		do {
-			juego = MetodosGuardado.juegoCargado(juego, sc, guardado);
+			juego = MetodosGuardado.juegoCargado(sc, guardado);
 			try {
 				if (juego.jugar(sc, juego.isCargado()) == true) {
 					continuar = Metodos.seguirJugando(sc);

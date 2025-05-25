@@ -21,24 +21,22 @@ public class MetodosGuardado {
 		}
 	}
 
-	public static Juego juegoCargado(Juego juego, Scanner sc, File guardado) {
-		juego = null;
-		char opcion = 0;
-		opcion = quieresCargar(sc, opcion);
+	public static Juego juegoCargado(Scanner sc, File guardado) {
+		char opcion = quieresCargar(sc);
 		if (opcion == 'n') {
-			juego = new Juego();
+			Juego juego = new Juego();
 			juego.setCargado(false);
 			return juego;
 		} else if (opcion == 's') {
 			try {
-				if (cargarPartida(guardado, juego) != null) {
+				if (cargarPartida(guardado) != null) {
 					System.out.println("Cargamos partida");
-					juego = cargarPartida(guardado, juego);
+					Juego juego = cargarPartida(guardado);
 					juego.setCargado(true);
 					return juego;
 				} else {
 					System.out.println("\nNo hay datos guardados\n");
-					juego = new Juego();
+					Juego juego = new Juego();
 					juego.setCargado(false);
 					return juego;
 				}
@@ -49,13 +47,14 @@ public class MetodosGuardado {
 			}
 		} else {
 			System.out.println("Opcion no encotrada, creamos partida");
-			juego = new Juego();
+			Juego juego = new Juego();
 			juego.setCargado(false);
 			return juego;
 		}
 	}
 
-	public static char quieresCargar(Scanner sc, char opcion) {
+	public static char quieresCargar(Scanner sc) {
+		char opcion = '0';
 		do {
 			System.out.print("Quieres cargar partida?[s/n]: ");
 			try {
@@ -69,14 +68,14 @@ public class MetodosGuardado {
 		return opcion;
 	}
 
-	public static Juego cargarPartida(File guardado, Juego juego) throws ClassNotFoundException, IOException {
+	public static Juego cargarPartida(File guardado) throws ClassNotFoundException, IOException {
 		FileInputStream escriba = null;
 		ObjectInputStream imprenta = null;
 
 		if (guardado.length() > 0) {
 			escriba = new FileInputStream(guardado);
 			imprenta = new ObjectInputStream(escriba);
-			juego = (Juego) imprenta.readObject();
+			Juego juego = (Juego) imprenta.readObject();
 			imprenta.close();
 			escriba.close();
 			return juego;
