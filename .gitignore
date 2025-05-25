@@ -1,2 +1,5 @@
 .DS_Store
 /bin/
+record.txt
+save.txt
+.classpath
