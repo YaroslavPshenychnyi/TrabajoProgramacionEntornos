@@ -11,6 +11,9 @@ import java.util.Scanner;
 import classes.Juego;
 
 public class MetodosGuardado {
+
+	
+	
 	public static void archivoSiempreExiste(File guardado) {
 		if (!guardado.exists()) {
 			try {
@@ -21,8 +24,8 @@ public class MetodosGuardado {
 		}
 	}
 
-	public static Juego juegoCargado(Juego juego, Scanner sc, File guardado) {
-		juego = null;
+	public static Juego juegoCargado(Scanner sc, File guardado) {
+		Juego juego = null;
 		char opcion = 0;
 		opcion = quieresCargar(sc, opcion);
 		if (opcion == 'n') {
@@ -31,9 +34,9 @@ public class MetodosGuardado {
 			return juego;
 		} else if (opcion == 's') {
 			try {
-				if (cargarPartida(guardado, juego) != null) {
+				if (cargarPartida(guardado) != null) {
 					System.out.println("Cargamos partida");
-					juego = cargarPartida(guardado, juego);
+					juego = cargarPartida(guardado);
 					juego.setCargado(true);
 					return juego;
 				} else {
@@ -62,14 +65,13 @@ public class MetodosGuardado {
 				opcion = sc.nextLine().toLowerCase().charAt(0);
 			} catch (StringIndexOutOfBoundsException e) {
 				System.out.print("No has escrito nada, pulsa 'Enter'");
-			} finally {
-				sc.nextLine();
 			}
 		} while (!Character.isAlphabetic(opcion));
 		return opcion;
 	}
 
-	public static Juego cargarPartida(File guardado, Juego juego) throws ClassNotFoundException, IOException {
+	public static Juego cargarPartida(File guardado) throws ClassNotFoundException, IOException {
+		Juego juego = null;
 		FileInputStream escriba = null;
 		ObjectInputStream imprenta = null;
 
