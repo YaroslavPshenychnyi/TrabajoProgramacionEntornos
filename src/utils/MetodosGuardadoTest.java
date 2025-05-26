@@ -15,7 +15,7 @@ public class MetodosGuardadoTest {
 	@Test
 	void quieresCargarTest() {
 		Scanner sc = new Scanner("S		");
-		char symbol = MetodosGuardado.quieresCargar(sc, (char) 0);
+		char symbol = MetodosGuardado.quieresCargar(sc);
 		assertTrue(symbol == 's');
 	}
 
