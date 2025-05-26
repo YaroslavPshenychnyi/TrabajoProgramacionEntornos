@@ -12,8 +12,6 @@ import classes.Juego;
 
 public class MetodosGuardado {
 
-	
-	
 	public static void archivoSiempreExiste(File guardado) {
 		if (!guardado.exists()) {
 			try {
@@ -50,12 +48,8 @@ public class MetodosGuardado {
 				System.out.println("Error de lectura del archivo de guardado");
 				return null;
 			}
-		} else {
-			System.out.println("Opcion no encotrada, creamos partida");
-			juego = new Juego();
-			juego.setCargado(false);
-			return juego;
 		}
+		return null;
 	}
 
 	public static char quieresCargar(Scanner sc, char opcion) {
@@ -64,9 +58,9 @@ public class MetodosGuardado {
 			try {
 				opcion = sc.nextLine().toLowerCase().charAt(0);
 			} catch (StringIndexOutOfBoundsException e) {
-				System.out.print("No has escrito nada, pulsa 'Enter'");
+				System.out.println("No has escrito nada, pulsa 'Enter'");
 			}
-		} while (!Character.isAlphabetic(opcion));
+		} while (opcion != 's' && opcion != 'n');
 		return opcion;
 	}
 
